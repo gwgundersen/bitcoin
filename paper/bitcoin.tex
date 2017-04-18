@@ -45,7 +45,7 @@ We predict future Bitcoin transactions for pairs of addresses based on historica
 
 Bitcoin is an online virtual currency introduced in 2008 by Satoshi Nakamoto \cite{nakamoto2008bitcoin}. All transactions are cryptographically signed and recorded on a public ledger called the blockchain. The blockchain allows the global, peer-to-peer network of Bitcoin users to validate all transactions and thereby eschew a centralized bank. See \cite{nielsen2013bitcoin} for a detailed explanation of how Bitcoin works. The upshot is that with Bitcoin, everyone is the bank and the blockchain is an account of the entire history of all anonymized transactions.
 
-In this paper, we predict transactions between pairs of addresses in a portion of the Bitcoin blockchain. The training dataset consists of transaction counts between sender-receiver address pairs that did interact, i.e. there are no zero counts, within a one year period. Therefore the entire training dataset consists of positive examples. The testing dataset consists of some pairs of addresses which did not interact and some which did in a subsequent year. We find that matrix completion methods to estimate the probability of transactions between a sender-receiver pair work better than traditional classification models. In particular, we investigate two matrix completion methods, singular value decomposition (SVD) and nonnegative matrix factorization (NMF). Their performances were evaluated on accuracy, precision, recall, and area under the curve (AUC). We found that NMF generalizes better on the test data in comparison to SVD. We also explored latent dirichlet allocation (LDA) but the method was slow with worse performance.
+In this paper, we predict transactions between pairs of addresses in a portion of the Bitcoin blockchain. The training dataset consists of transaction counts between sender-receiver address pairs that did interact, i.e. there are no zero counts, within a one year period. Therefore the entire training dataset consists of positive examples. The testing dataset consists of some pairs of addresses which did not interact and some which did in a subsequent year. In particular, we investigate two matrix completion methods, singular value decomposition (SVD) and nonnegative matrix factorization (NMF). Their performances were evaluated on accuracy, precision, recall, and area under the curve (AUC). We found that NMF generalizes better on the test data in comparison to SVD. We also explored latent Dirichlet allocation (LDA) but the method was slow with worse performance.
 
 We also explored an alternative approach to the prediction problem by using traditional, supervised classifiers, SVM and logistic regression. For this purpose, we extracted features from the training dataset using graph properties of indegree and outdegree for each node corresponding to each address. Using nonzero counts of transactions as positive labels, we trained the models for both these classifiers by constructing a subsample of the full dataset consisting of address pairs which did not interact in the training dataset along with the ones that did. We observed that these two methods performed equally well as compared to the matrix completion methods described above.
 
@@ -158,8 +158,11 @@ Our supervised classifiers and matrix completion methods were evaluated on accur
 
 \subsection{Supervised learning}
 
-The two supervised learning methods worked reasonably well given the size and sparsity of the dataset. Logistic regression was faster than any other method by an order of magnitude [TK check with Prakhar]. We found that the proportion of positive examples was an important hyperparameter for both models. Both models had better accuracy and precision with a lower proportion of positive examples, but a slightly worse recall [TK confirm on final results].
+The two supervised learning methods worked reasonably well given the size and sparsity of the dataset. We found that the proportion of positive examples was an important hyperparameter for both models. Both models had better accuracy and precision with a lower proportion of positive examples, but a slightly worse recall.
 
+\subsection{Matrix completion}
+
+The results for the performance of SVD, NMF, have been summarized in Table \ref{tab:standardresults}. Moreover, ROC curves for both the methods were analyzed to compare the performances for varying classification thresholds \ref{fig:roc}. It can be clearly observed from the two ROC curves that NMF outperforms the SVD since the performance of SVD based approach falls below the random guess at a certain threshold.
 
 \begin{table}
 \centering
@@ -192,10 +195,6 @@ The two supervised learning methods worked reasonably well given the size and sp
 \label{tab:standardresults}
 \end{table}
 
-\paragraph{SVM and Logistic regression.} TK TK.
-
-\paragraph{NMF.} TK TK.
-
 \begin{figure}
 \centering
 \begin{subfigure}{.5\textwidth}
@@ -213,8 +212,6 @@ The two supervised learning methods worked reasonably well given the size and sp
 \caption{\small TK TK}
 \label{fig:test}
 \end{figure}
-
-\paragraph{SVD.} In order to decompose the large sparse data matrix as a product of two low-rank matrices, we analyzed the singular values by plotting these singular values for different components. We decided to select the top 20 components by observing a ``knee'' in the plot (Figure \ref{fig:svd}). Thus, the assumption was that the basic factors determining whether a transaction would take place can be explained by these 20 components.
 
 \section{Discussion}
 
