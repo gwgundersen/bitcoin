@@ -162,12 +162,12 @@ The two supervised learning methods worked reasonably well given the size and sp
 
 \subsection{Matrix completion}
 
-The results for the performance of SVD, NMF, and LDA have been summarized in Table \ref{tab:standardresults}. Moreover, ROC curves for both the methods were analyzed to compare the performances for varying classification thresholds \ref{fig:roc}. It can be clearly observed from the two ROC curves that NMF outperforms the SVD since the performance of SVD based approach falls below the random guess at a certain threshold.
+The results for the performance of SVD, NMF, and LDA have been summarized in Table \ref{tab:standardresults}. Moreover, ROC curves for both the methods were analyzed to compare the performances for varying classification thresholds \ref{fig:roc}. It can be clearly observed from these three ROC curves that NMF outperforms SVD and LDA.
 
 \begin{table}
 \centering
 {
-\fontsize{8 }{14}\selectfont
+\fontsize{6}{10}\selectfont
 \noindent\begin{tabular}{ c | c c c | c c c | c c c c | c | c }
 	\hline
 	    & \multicolumn{3}{c|}{LSVM}
@@ -179,21 +179,22 @@ The results for the performance of SVD, NMF, and LDA have been summarized in Tab
     & pp=0.5 & pp=0.1 & pp=0.01 & pp=0.5 & pp=0.1 & pp=0.01 & k=5 & k=10 & k=20 & k=50 & $n_{comp}$=20 & $n_{topic}$=5 \\
 	\hline
 	\hline
-	Accuracy  & 0.6670 & 0.8397 & 0.8150 & 0.6235 & 0.8580 & 0.8942 & 0.8891 & 0.8696 & 0.8449 & 0.8468 & 0.8380 & 0.1000 \\
+	Accuracy  & 0.667 & 0.839 & 0.815 & 0.623 & 0.858 & 0.894 & 0.889 & 0.869 & 0.844 & 0.846 & 0.838 & 0.100 \\
 	\hline
-	Precision & 0.1947 & 0.3346 & 0.2890 & 0.1755 & 0.3697 & 0.4744 & 0.4350 & 0.3584 & 0.2880 & 0.2940 & 0.2629 & 0.1000 \\
+	Precision & 0.194 & 0.334 & 0.289 & 0.175 & 0.369 & 0.474 & 0.435 & 0.358 & 0.288 & 0.294 & 0.262 & 0.100 \\
 	\hline
-	Recall    & 0.7430 & 0.6100 & 0.5820 & 0.7480 & 0.5960 & 0.5370 & 0.3680 & 0.3850 & 0.3760 & 0.3800 & 0.6380 & 0.5868 \\
+	Recall    & 0.743 & 0.610 & 0.582 & 0.748 & 0.596 & 0.537 & 0.368 & 0.385 & 0.376 & 0.380 & 0.638 & 0.586 \\
 	\hline
-	F1 score  & 0.3086 & 0.4322 & 0.3862 & 0.2844 & 0.4564 & 0.5038 & 0.3989 & 0.3712 & 0.3265 & 0.3315 & 0.3440 & 1.0000 \\
+	F1 score  & 0.308 & 0.432 & 0.386 & 0.284 & 0.456 & 0.503 & 0.398 & 0.371 & 0.326 & 0.331 & 0.344 & 1.000 \\
 	\hline
-	AUC       & 0.7008 & 0.7376 & 0.7114 & 0.6788 & 0.7416 & 0.7354 & 0.7320 & 0.7329 & 0.7230 & 0.7337 & 0.2980 & 0.1818 \\
+	AUC       & 0.700 & 0.737 & 0.711 & 0.678 & 0.741 & 0.735 & 0.732 & 0.732 & 0.723 & 0.733 & 0.298 & 0.181 \\
 	\hline
 \end{tabular}
 }
 \caption{\small Performance summary for both supervised classifiers and matrix completion methods.}
 \label{tab:standardresults}
 \end{table}
+
 
 \begin{figure}
 \centering
