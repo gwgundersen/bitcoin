@@ -36,7 +36,7 @@ Princeton University \\
 \maketitle
 
 \begin{abstract}
-We predict future Bitcoin transactions for pairs of addresses based on historical transaction data. The training dataset consists of transaction counts between sender-receiver address pairs that interacted within a one-year period. The test data consists of address pairs which did not interact within that one year period but may have in the future. We convert the training dataset into an extremely sparse adjacency matrix of all possible combinations of addresses with each entry corresponding to the number of transactions and then use matrix completion methods to reconstruct a low-rank approximation of the data which can be used for prediction. We find that two matrix completion methods, singular value decomposition and nonnegative matrix factorization, generalize significantly better than random guessing.
+We predict future Bitcoin transactions for pairs of addresses based on historical transaction data. The training dataset consists of transaction counts between sender-receiver address pairs that interacted within a one-year period. The test data consists of address pairs which did not interact within that one year period but may have in the future. We approach the problem in two ways: supervised learning on a subsample of a full dataset of graph features and matrix completion of an extremely sparse adjacency matrix. We find that two supervised classifiers, support vector machine with a linear kernel and logistic regression, and two matrix completion methods, singular value decomposition and nonnegative matrix factorization, generalize significantly better than random guessing.
 \end{abstract}
 
 \section{Introduction}
