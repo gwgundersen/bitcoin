@@ -85,7 +85,7 @@ In addition, we also found a strong relationship between the address and the out
 \label{fig:test}
 \end{figure}
 
-\subsection{Feature selection}
+\subsection{Features}\label{features}
 
 We approached prediction through two views of the data: matrix completion of a binary adjacency matrix and supervised learning on a dataset with graph properties as features.
 
@@ -122,7 +122,7 @@ $$
 
 In principle, $\hat{X}$ is a matrix that captures the latent structure in $X$. We can then base predictions on the value in the completed matrix. For example, since our matrix $X$ contains sender addresses as rows and receiver addresses as columns (or vice versa), then the prediction for whether or not the $i$th address made a transaction with the $j$th address would be found in $\hat{X}[i, j]$.
 
-There are many algorithms for solving matrix factorization for NMF. See \cite{lee2001algorithms} for details. One straightforward way is to use gradient descent to minimize the difference between the observed data and the factorized estimates. Formally, given observation $X_{ij}$, we want to find low-dimensional vectors $v$ and $u$ such that $X_{ij} = v_i \cdot  u_j$ by minimizing the following objective function:
+There are many algorithms for solving matrix factorization for NMF \cite{lee2001algorithms}. One straightforward way is to use gradient descent to minimize the difference between the observed data and the factorized estimates. Formally, given observation $X_{ij}$, we want to find low-dimensional vectors $v$ and $u$ such that $X_{ij} = v_i \cdot  u_j$ by minimizing the following objective function:
 
 $$
 f(u, v) = \sum_{i,j \text{ observed}} (X_{ij} - v_i \cdot u_j)^2
@@ -130,29 +130,27 @@ $$
 
 Ultimately, the learned matrices $V$ and $U$ are uninterpretable. But like many machine learning methods, we assume that if we can approximate the data well with fewer numbers, we might capture generalities in the data. Other dimensionality reduction methods such as SVD and PCA rely on this thinking as well.
 
-\paragraph{Classifiers.} We used four classifiers from the \texttt{scikit-learn} Python library \cite{scikit-learn}, two which make predictions on graph features and two which use matrix completion. Unless stated otherwise, we used the default parameters for each classifier as implemented by \texttt{scikit-learn}.
+\paragraph{Classifiers.} We used five classifiers from the \texttt{scikit-learn} Python library \cite{scikit-learn}, two which perform supervised learning on graph features and two which use matrix completion. Unless stated otherwise, we used the default parameters for each classifier as implemented by \texttt{scikit-learn}.
 
-\emph{Supervised learning classifiers.}
+\emph{Supervised learning classifiers.} For both supervised learning models, the full dataset was too large. Instead, we trained each model on random subsamples of the full dataset. In each experiment, the size of the subsample was 1,000,000. We varied the percentage of positive examples in each subsample ($pp$) and report the results in Table \ref{tab:standardresults}.
 
 \begin{itemize}
 
-\item \textbf{Support Vector Machine} (SVM): Linear classification with hinge loss. \texttt{scikit-learn}'s default \texttt{SVC} class was extremely slow, so we trained a \texttt{SGDClassifier} with hinge loss online for 100 batches with a batch size of 100000 and 0.1\% positive examples.
+    \item \textbf{Linear Support Vector Machine} (LSVM): A linear SVM classifier finds a hyperplane which maximizes the distance of the hyperplane from the data being classified. Since \texttt{scikit-learn}'s default \texttt{SVC} class was extremely slow, we trained a \texttt{SGDClassifier} model, which is a linear classifier trained with stochastic gradient descent. We used the hinge loss function, which makes the model equivalent to linear SVM. We trained it online for 100 batches with a batch size of 100000 and 0.1\% positive examples.
 
-\item \textbf{Logistic Regression} (LR): Regression with binary classification. We trained the model on a subsample of the full dataset ($n = 1,000,000$) with varying percentages of positive examples ($pp$).
+    \item \textbf{Logistic Regression} (LR): Logistic regression is regression with binary labels. We used \texttt{scikit-learn}'s \text{\detokenize{predict_proba}} function to get probabilities for the ROC curve and used a threshold for prediction of 0.5.
 
 \end{itemize}
 
-\emph{Matrix completion classifiers.}
+\emph{Matrix completion methods.}
 
 \begin{itemize}
 
-\item \textbf{Singular Value Decomposition.} (SVD): is a matrix factorization and dimensionality reduction technique.
+    \item \textbf{Singular Value Decomposition.} (SVD): SVD is a matrix factorization and dimensionality reduction technique. It decomposes the original data into a product of 3 matrices: $U$, $\Sigma$ and $V$ where $\Sigma$ is a diagonal matrix while $U$ and $V$ are left-singular and right-singular matrices respectively.
 
-\item \textbf{Nonnegative Matrix Factorization} (NMF): Factorizes the observed data matrix $X$ into two lower-dimensional matrices. A new matrix $\hat{X}$ can be reconstructed and used for prediction. See Section \ref{Spotlight} for details.
+    \item \textbf{Nonnegative Matrix Factorization} (NMF): NMF decomposes multivariate data into the product of two non-negative matrices. By restricting the rank of the matrices, we can create a dense, low-rank approximation of the data. See Section \ref{Spotlight} for details.
 
-Non-negative matrix factorization is another well-known matrix completion technique. It is especially useful for decomposition of multivariate data into product of two non-negative matrices. By restricting the rank of the matrices we can create a dense low rank approximation of the data and extract the underlying meaningful structures in the data.
-
-\item \textbf{Latent Dirichlet Allocation} (LDA): Statistical model that explains why latent groups in the data are similar. We used $\text{\detokenize{n_topics}}=5$.
+    \item \textbf{Latent Dirichlet Allocation} (LDA): LDA builds a low-rank approximation of the data by using small number of ``topics''. In our case, we choose $\texttt{\detokenize{n_topics}}=5$. Each topics explains the broad grouping under which each data point can  be placed.
 
 \end{itemize}
 
@@ -163,27 +161,27 @@ The results for the performance of SVD and NMF were evaluated on various metrics
 \begin{table}
 \centering
 {
-\fontsize{10}{14}\selectfont
+\fontsize{8 }{14}\selectfont
 \noindent\begin{tabular}{ c | c | c c c | c c c c | c | c }
 	\hline
-	    & \multirow{2}{*}{SVM}
+	    & \multirow{2}{*}{LSVM}
 	    & \multicolumn{3}{c|}{LR}
 	    & \multicolumn{4}{c|}{NMF}
-	    & \multirow{2}{*}{LDA}
-	    & \multirow{2}{*}{SVD} \\
-	\cline{3-9}
-    & & pp=0.5 & pp=0.1 & pp=0.01 & k=5 & k=10 & k=20 & k=50 & & \\
+	    & \multicolumn{1}{c|}{SVD}
+	    & \multicolumn{1}{c}{LDA}\\
+	\cline{3-11}
+    & & pp=0.5 & pp=0.1 & pp=0.01 & k=5 & k=10 & k=20 & k=50 & nc=20 & nt=5 \\
 	\hline
 	\hline
-	Accuracy  & 0.8430 & 0.6235 & 0.8580 & 0.8942 & 0.8891 & 0.8696 & 0.8449 & 0.8468 & 0.1000 & 0.8380 \\
+	Accuracy  & 0.8430 & 0.6235 & 0.8580 & 0.8942 & 0.8891 & 0.8696 & 0.8449 & 0.8468 & 0.8380 & 0.1000 \\
 	\hline
-	Precision & 0.3339 & 0.1755 & 0.3697 & 0.4744 & 0.4350 & 0.3584 & 0.2880 & 0.2940 & 0.1000 & 0.2629 \\
+	Precision & 0.3339 & 0.1755 & 0.3697 & 0.4744 & 0.4350 & 0.3584 & 0.2880 & 0.2940 & 0.2629 & 0.1000 \\
 	\hline
-	Recall    & 0.5730 & 0.7480 & 0.5960 & 0.5370 & 0.3680 & 0.3850 & 0.3760 & 0.3800 & 0.5868 & 0.6380 \\
+	Recall    & 0.5730 & 0.7480 & 0.5960 & 0.5370 & 0.3680 & 0.3850 & 0.3760 & 0.3800 & 0.6380 & 0.5868 \\
 	\hline
-	F1 score  & 0.4219 & 0.2844 & 0.4564 & 0.5038 & 0.3989 & 0.3712 & 0.3265 & 0.3315 & 1.0000 & 0.3440 \\
+	F1 score  & 0.4219 & 0.2844 & 0.4564 & 0.5038 & 0.3989 & 0.3712 & 0.3265 & 0.3315 & 0.3440 & 1.0000 \\
 	\hline
-	AUC       & 0.7230 & 0.6788 & 0.7416 & 0.7354 & 0.7320 & 0.7329 & 0.7230 & 0.7337 & 0.1818 & 0.2980 \\
+	AUC       & 0.7230 & 0.6788 & 0.7416 & 0.7354 & 0.7320 & 0.7329 & 0.7230 & 0.7337 & 0.2980 & 0.1818 \\
 	\hline
 \end{tabular}
 }
@@ -217,7 +215,11 @@ The results for the performance of SVD and NMF were evaluated on various metrics
 
 \section{Discussion}
 
-This work has attempted at identifying the possibility of future transactions between previously unrelated addresses. Matrix completion methods have been used as the tools for doing the same.
+Our analysis showed that NMF outperforms SVD and LDA on metrics described in the results section. Moreover, it was observed that LDA was extremely slow even when the number of topics was as small as 5. This could possibly be due to the underlying algorithmic implementation of LDA which is more suited for topic modelling in text documents by iterating over all the words in a document for all the documents in a corpus. The high dimensionality of our dataset makes it computationally intractable to train for larger number of topics.
+
+Two supervised learning methods also worked well. In particular, logistic regression was extremely fast on subsamples of a full dataset of graph-based features. We found that the proportion of positive examples was an important hyperparameter. The model had better accuracy with a lower proportion of positive examples, but a slightly worse recall.
+
+We have therefore approached the task of identifying whether a transaction will occur from two angles. The first viewpoint leverages classification techniques such as SVM and Logistic regression by constructing features from the training dataset using graph properties of indegree and outdegree. The second approach involves viewing the data as a large and sparse matrix of the counts of transactions and employing matrix completion methods like NMF, SVD and LDA to get a low rank approximation of the data and thereby identify the underlying latent structures. In conclusion, the future direction of this work can involve developing complex models which make use of both the classification and matrix completion methods in conjunction with each other so as to better predict transactions.
 
 \subsubsection*{Acknowledgments}
 

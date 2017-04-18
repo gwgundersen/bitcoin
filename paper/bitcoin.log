@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  18 APR 2017 10:56
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  18 APR 2017 15:26
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -456,32 +456,16 @@ File: figures/matrix_completion.png Graphic file (type png)
 Package pdftex.def Info: figures/matrix_completion.png used on input line 110.
 (pdftex.def)             Requested size: 202.78603pt x 118.42433pt.
  [3 <./figures/matrix_completion.png>]
-LaTeX Font Info:    Try loading font information for OMS+ptm on input line 139.
+LaTeX Font Info:    Try loading font information for OMS+ptm on input line 141.
 
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/omsptm.fd
 File: omsptm.fd 
 )
 LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 139.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 141.
 
-Underfull \hbox (badness 10000) in paragraph at lines 139--140
-[]\OT1/ptm/b/n/10 Support Vec-tor Ma-chine \OT1/ptm/m/n/10 (SVM): Lin-ear clas-
-si-fi-ca-tion with hinge loss.
- []
-
-
-Underfull \hbox (badness 7256) in paragraph at lines 139--140
-\OT1/pcr/m/n/10 scikit-learn\OT1/ptm/m/n/10 's de-fault \OT1/pcr/m/n/10 SVC \OT
-1/ptm/m/n/10 class was ex-tremely slow, so we trained a
- []
-
-
-Overfull \hbox (54.59448pt too wide) in paragraph at lines 167--190
- [] 
- []
-
-<figures/singular_values_log_yscale.png, id=97, 433.62pt x 289.08pt>
+<figures/singular_values_log_yscale.png, id=98, 433.62pt x 289.08pt>
 File: figures/singular_values_log_yscale.png Graphic file (type png)
 
 <use figures/singular_values_log_yscale.png>
@@ -489,33 +473,34 @@ Package pdftex.def Info: figures/singular_values_log_yscale.png used on input l
 ine 202.
 (pdftex.def)             Requested size: 198.7425pt x 132.4976pt.
 
-<figures/roc.png, id=98, 433.62pt x 289.08pt>
+<figures/roc.png, id=99, 433.62pt x 289.08pt>
 File: figures/roc.png Graphic file (type png)
  <use figures/roc.png>
 Package pdftex.def Info: figures/roc.png used on input line 208.
 (pdftex.def)             Requested size: 198.7425pt x 132.4976pt.
  [4]
-(./bitcoin.bbl)
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 229.
- [5 <./figures/singular_values_log_yscale.png> <./figures/roc.png>]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 229.
+(./bitcoin.bbl [5 <./figures/singular_values_log_yscale.png> <./figures/roc.png
+>])
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 233.
+ [6]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 233.
  (./bitcoin.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 229.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 229.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 233.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 233.
 Package rerunfilecheck Info: File `bitcoin.out' has not changed.
-(rerunfilecheck)             Checksum: 4A8BDA54EDF1C210BC71384C91C2A057;475.
+(rerunfilecheck)             Checksum: AB9959E67669364A7247FB7EED554EC2;466.
 
 
 LaTeX Warning: There were multiply-defined labels.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 229.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 233.
  ) 
 Here is how much of TeX's memory you used:
- 9498 strings out of 493014
- 141860 string characters out of 6133351
+ 9512 strings out of 493014
+ 141995 string characters out of 6133351
  258129 words of memory out of 5000000
- 12885 multiletter control sequences out of 15000+600000
- 21370 words of font info for 45 fonts, out of 8000000 for 9000
+ 12893 multiletter control sequences out of 15000+600000
+ 24522 words of font info for 53 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  42i,12n,40p,954b,462s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
@@ -532,10 +517,10 @@ xmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2016/texmf-dist
 type1/urw/times/utmb8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/
 times/utmr8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/times/utmr
 i8a.pfb>
-Output written on bitcoin.pdf (5 pages, 337863 bytes).
+Output written on bitcoin.pdf (6 pages, 340217 bytes).
 PDF statistics:
- 172 PDF objects out of 1000 (max. 8388607)
- 140 compressed objects within 2 object streams
- 36 named destinations out of 1000 (max. 500000)
+ 180 PDF objects out of 1000 (max. 8388607)
+ 147 compressed objects within 2 object streams
+ 37 named destinations out of 1000 (max. 500000)
  98 words of extra memory for PDF output out of 10000 (max. 10000000)
 
