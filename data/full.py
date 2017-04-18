@@ -22,6 +22,8 @@ if __name__ == '__main__':
 
     X_train = add_new_features(X_train, degree_map)
     X_test = add_new_features(X_test, degree_map)
+    X_train = np.delete(X_train, 2, axis=1)
+    X_test = np.delete(X_test, 2, axis=1)
 
     np.save('data/train_X_full.npy', X_train)
     np.save('data/test_X_full.npy', X_test)

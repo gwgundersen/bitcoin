@@ -8,6 +8,7 @@
 \usepackage{listings}
 \usepackage{csquotes}
 \usepackage{subcaption}
+\usepackage{multirow}
 
 \lstset{
     basicstyle=\small\ttfamily,
@@ -62,6 +63,10 @@ The Netflix Prize is a popular example of recommender systems employing large sc
 
 The training dataset consists of transactions between 3,348,026 sender-receiver pairs and the number of times the sender paid the receiver. The transactions were made between March 2012 to March 2013. The testing dataset consists of sender-receiver pairs which did not interact in the training set time period but may have by the following year, May 2014. The full dataset contains 444,075 unique addresses, and therefore over 19.7 billion possible unordered pairs of addresses. A binary adjacency matrix is extremely sparse, with only $1.7 \times 10^{-5}$ nonzero values.
 
+\subsection{Feature selection}
+
+
+
 \subsection{Classifiers}\label{classifiers}
 
 \paragraph{Spotlight: Nonnegative matrix factorization}
@@ -99,7 +104,9 @@ $$
 
 Ultimately, the learned matrices $V$ and $U$ are uninterpretable. But like many machine learning methods, we assume that if we can approximate the data well with fewer numbers, we might capture generalities in the data. Other dimensionality reduction methods such as SVD and PCA rely on this thinking as well.
 
-\subsection{Classification methods.} We employed several matrix completion methods to find low-rank approximations of the data. We also tried an SVM classifier with random subsampling from a full dataset of all possible transactions.
+\subsection{Classifiers.}
+
+We used four classifiers from the \texttt{scikit-learn} Python library \cite{scikit-learn}, two which make predictions on graph features and two which use matrix completion. Unless stated otherwise, we used the default parameters for each classifier as implemented by \texttt{scikit-learn}.
 
 \begin{itemize}
 
@@ -114,6 +121,37 @@ Ultimately, the learned matrices $V$ and $U$ are uninterpretable. But like many 
 \section{Results}
 
 The results for the performance of SVD and NMF were evaluated on various metrics such as accuracy score, precision, recall and F-1 score. The results have been summarized in Table [TK table]. Moreover, ROC curves for both the methods were analyzed to compare the performances for varying classification thresholds [TK table] . It can be clearly observed from the two ROC curves that NMF outperforms the SVD since the performance of SVD based approach falls below the random guess at a certain threshold.
+
+\begin{table}
+\centering
+{
+\fontsize{10}{12}\selectfont
+\noindent\begin{tabular}{ c | c | c | c c c c | c c | c }
+	\hline
+	& \multirow{2}{*}{SVM}
+	    & \multirow{2}{*}{LR}
+	    & \multicolumn{4}{c|}{NMF}
+	    & \multicolumn{2}{c|}{LDA}
+	    & \multirow{2}{*}{SVD} \\
+	\cline{4-9}
+    & & & k=5 & k=10 & k=20 & k=50 & k=2 & k=5 \\
+	\hline
+	\hline
+	Accuracy  & & 0.8948 & 0.8891 & 0.8696 & 0.8449 & 0.8468 & & & 0.8380 \\
+	\hline
+	Precision & & 0.4760 & 0.4350 & 0.3584 & 0.2880 & 0.2940 & & & 0.2629 \\
+	\hline
+	Recall    & & 0.5390 & 0.3680 & 0.3850 & 0.3760 & 0.3800 & & & 0.6380 \\
+	\hline
+	F1 score  & & 0.5061 & 0.3989 & 0.3712 & 0.3265 & 0.3315 & & & 0.3440 \\
+	\hline
+	AUC       & & 0.7367 & 0.7320 & 0.7329 & 0.7230 & 0.7337 & & & 0.2980 \\
+	\hline
+\end{tabular}
+}
+\caption{\small TK TK}
+\label{tab:standardresults}
+\end{table}
 
 \paragraph{SVM and Logistic regression.} TK TK.
 
