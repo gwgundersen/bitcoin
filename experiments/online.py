@@ -23,7 +23,7 @@ def run_experiments(n_batches):
                 print(acc, prec, rec, f1, auc)
 
 def run_experiment(clf):
-    X_train, y_train, X_test, y_test = data.load('subsample', n=10000, pct_pos=0.01)
+    X_train, y_train, X_test, y_test = data.load('subsample', n=100000, pct_pos=0.01)
     X_train = np.delete(X_train, [0, 1], axis=1)
     X_test = np.delete(X_test, [0, 1], axis=1)
     print('Data subsampled.')
