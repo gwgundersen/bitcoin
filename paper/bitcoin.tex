@@ -128,7 +128,7 @@ $$
 
 Ultimately, the learned matrices $V$ and $U$ are uninterpretable. But like many machine learning methods, we assume that if we can approximate the data well with fewer numbers, we might capture generalities in the data. Other dimensionality reduction methods such as SVD and PCA rely on this thinking as well.
 
-\paragraph{Classifiers.} We used five classifiers from the \texttt{scikit-learn} Python library \cite{scikit-learn}, two which perform supervised learning on graph features and two which use matrix completion. Unless stated otherwise, we used the default parameters for each classifier as implemented by \texttt{scikit-learn}.
+\paragraph{Classifiers.} We used five classifiers from the \texttt{scikit-learn} Python library \cite{scikit-learn}, two which perform supervised learning on graph features and three which use matrix completion. Unless stated otherwise, we used the default parameters for each classifier as implemented by \texttt{scikit-learn}.
 
 \emph{Supervised learning classifiers.} For both supervised learning models, the full dataset was too large. Instead, we trained each model on random subsamples of the full dataset. In each experiment, the size of the subsample was 1,000,000. We varied the percentage of positive examples in each subsample ($pp$) and report the results in Table \ref{tab:standardresults}.
 
@@ -158,36 +158,36 @@ Our supervised classifiers and matrix completion methods were evaluated on accur
 
 \subsection{Supervised learning}
 
-The two supervised learning methods worked reasonably well given the size and sparsity of the dataset. We found that the proportion of positive examples was an important hyperparameter for both models. Both models had better accuracy and precision with a lower proportion of positive examples, but a slightly worse recall.
+The two supervised learning methods worked reasonably well given the size and sparsity of the dataset. We found that the proportion of positive examples ($pp$) was an important hyperparameter for both models. Both models had better accuracy and precision with a lower proportion of positive examples, but a slightly worse recall.
 
 \subsection{Matrix completion}
 
-The results for the performance of SVD, NMF, have been summarized in Table \ref{tab:standardresults}. Moreover, ROC curves for both the methods were analyzed to compare the performances for varying classification thresholds \ref{fig:roc}. It can be clearly observed from the two ROC curves that NMF outperforms the SVD since the performance of SVD based approach falls below the random guess at a certain threshold.
+The results for the performance of SVD, NMF, and LDA have been summarized in Table \ref{tab:standardresults}. Moreover, ROC curves for both the methods were analyzed to compare the performances for varying classification thresholds \ref{fig:roc}. It can be clearly observed from the two ROC curves that NMF outperforms the SVD since the performance of SVD based approach falls below the random guess at a certain threshold.
 
 \begin{table}
 \centering
 {
 \fontsize{8 }{14}\selectfont
-\noindent\begin{tabular}{ c | c | c c c | c c c c | c | c }
+\noindent\begin{tabular}{ c | c c c | c c c | c c c c | c | c }
 	\hline
-	    & \multirow{2}{*}{LSVM}
+	    & \multicolumn{3}{c|}{LSVM}
 	    & \multicolumn{3}{c|}{LR}
 	    & \multicolumn{4}{c|}{NMF}
 	    & \multicolumn{1}{c|}{SVD}
 	    & \multicolumn{1}{c}{LDA}\\
-	\cline{3-11}
-    & & pp=0.5 & pp=0.1 & pp=0.01 & k=5 & k=10 & k=20 & k=50 & nc=20 & nt=5 \\
+	\cline{2-11}
+    & pp=0.5 & pp=0.1 & pp=0.01 & pp=0.5 & pp=0.1 & pp=0.01 & k=5 & k=10 & k=20 & k=50 & $n_{comp}$=20 & $n_{topic}$=5 \\
 	\hline
 	\hline
-	Accuracy  & 0.8430 & 0.6235 & 0.8580 & 0.8942 & 0.8891 & 0.8696 & 0.8449 & 0.8468 & 0.8380 & 0.1000 \\
+	Accuracy  & 0.6670 & 0.8397 & 0.8150 & 0.6235 & 0.8580 & 0.8942 & 0.8891 & 0.8696 & 0.8449 & 0.8468 & 0.8380 & 0.1000 \\
 	\hline
-	Precision & 0.3339 & 0.1755 & 0.3697 & 0.4744 & 0.4350 & 0.3584 & 0.2880 & 0.2940 & 0.2629 & 0.1000 \\
+	Precision & 0.1947 & 0.3346 & 0.2890 & 0.1755 & 0.3697 & 0.4744 & 0.4350 & 0.3584 & 0.2880 & 0.2940 & 0.2629 & 0.1000 \\
 	\hline
-	Recall    & 0.5730 & 0.7480 & 0.5960 & 0.5370 & 0.3680 & 0.3850 & 0.3760 & 0.3800 & 0.6380 & 0.5868 \\
+	Recall    & 0.7430 & 0.6100 & 0.5820 & 0.7480 & 0.5960 & 0.5370 & 0.3680 & 0.3850 & 0.3760 & 0.3800 & 0.6380 & 0.5868 \\
 	\hline
-	F1 score  & 0.4219 & 0.2844 & 0.4564 & 0.5038 & 0.3989 & 0.3712 & 0.3265 & 0.3315 & 0.3440 & 1.0000 \\
+	F1 score  & 0.3086 & 0.4322 & 0.3862 & 0.2844 & 0.4564 & 0.5038 & 0.3989 & 0.3712 & 0.3265 & 0.3315 & 0.3440 & 1.0000 \\
 	\hline
-	AUC       & 0.7230 & 0.6788 & 0.7416 & 0.7354 & 0.7320 & 0.7329 & 0.7230 & 0.7337 & 0.2980 & 0.1818 \\
+	AUC       & 0.7008 & 0.7376 & 0.7114 & 0.6788 & 0.7416 & 0.7354 & 0.7320 & 0.7329 & 0.7230 & 0.7337 & 0.2980 & 0.1818 \\
 	\hline
 \end{tabular}
 }
