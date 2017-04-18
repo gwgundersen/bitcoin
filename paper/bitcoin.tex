@@ -36,7 +36,7 @@ Princeton University \\
 \maketitle
 
 \begin{abstract}
-We predict future Bitcoin transactions for pairs of addresses based on historical transaction data. The training dataset consists of transaction counts between sender-receiver address pairs that interacted within a one-year period. The test data consists of address pairs which did not interact within that one year period but may have in the future. We convert the training dataset into an extremely sparse binary adjacency matrix of all possible combinations of addresses and then use matrix completion methods to reconstruct a low-rank approximation of the data which can be used for prediction. We find that two matrix completion methods, singular value decomposition and nonnegative matrix factorization, do better than random guessing.
+We predict future Bitcoin transactions for pairs of addresses based on historical transaction data. The training dataset consists of transaction counts between sender-receiver address pairs that interacted within a one-year period. The test data consists of address pairs which did not interact within that one year period but may have in the future. We convert the training dataset into an extremely sparse adjacency matrix of all possible combinations of addresses with each entry corresponding to the number of transactions and then use matrix completion methods to reconstruct a low-rank approximation of the data which can be used for prediction. We find that two matrix completion methods, singular value decomposition and nonnegative matrix factorization, generalize significantly better than random guessing.
 \end{abstract}
 
 \section{Introduction}
@@ -45,13 +45,13 @@ We predict future Bitcoin transactions for pairs of addresses based on historica
 
 Bitcoin is an online virtual currency introduced in 2008 by Satoshi Nakamoto \cite{nakamoto2008bitcoin}. All transactions are cryptographically signed and recorded on a public ledger called the blockchain. The blockchain allows the global, peer-to-peer network of Bitcoin users to validate all transactions and thereby eschew a centralized bank. See \cite{nielsen2013bitcoin} for a detailed explanation of how Bitcoin works. The upshot is that with Bitcoin, everyone is the bank and the blockchain is an account of the entire history of all anonymized transactions.
 
-In this paper, we predict transactions between pairs of addresses in a portion of the Bitcoin blockchain. The training dataset consists of transaction counts between sender-receiver address pairs that did interact, i.e. there are no zero counts, within a one year period. Therefore the entire training dataset consists of positive examples. The testing dataset consists of some pairs of address which did not interact and some which did in a subsequent year. We find that matrix completion methods to estimate the probability of transactions between a sender-receiver pair work better than traditional classification models. In particular, we investigate two matrix completion methods, singular value decomposition (SVD) and nonnegative matrix factorization (NMF). Their performances were evaluated on accuracy, precision, recall, and area under the curve (AUC). We found that NMF generalizes better on the test data in comparison to SVD.
+In this paper, we predict transactions between pairs of addresses in a portion of the Bitcoin blockchain. The training dataset consists of transaction counts between sender-receiver address pairs that did interact, i.e. there are no zero counts, within a one year period. Therefore the entire training dataset consists of positive examples. The testing dataset consists of some pairs of addresses which did not interact and some which did in a subsequent year. We find that matrix completion methods to estimate the probability of transactions between a sender-receiver pair work better than traditional classification models. In particular, we investigate two matrix completion methods, singular value decomposition (SVD) and nonnegative matrix factorization (NMF). Their performances were evaluated on accuracy, precision, recall, and area under the curve (AUC). We found that NMF generalizes better on the test data in comparison to SVD.
 
-In addition, we explored an SVM-based classifier on a modified dataset in which the additional features are the in-degree and out-degree of both the receiver and sender. However, we found that the test accuracy was always around 90\% with low accuracy and recall despite constructing a balanced training set consisting of equal number of positive and negative labels.
+In addition, we explored an SVM-based classifier on a modified dataset in which the additional features are the indegree and outdegree of both the receiver and sender. However, we found that the test accuracy was always around 90\% with low accuracy and recall despite constructing a balanced training set consisting of equal number of positive and negative labels.
 
 \subsection{Related work}
 
-Matrix completion methods are frequently used for recommender systems \cite{koren2009matrix}. This is because recommender systems typically rely with incomplete and/or sparse data to provide suitable recommendations to the users for services like Amazon, Facebook, and Netflix. The sparsity is common because in most scenarios a user cannot rate or even be aware of most items. The central challenge, then, is to develop methods to fill in missing recommendations based on the user and others' recommendations. The key assumption is that user preferences are generally guided by a small number of underlying factors and so decomposing the data into a low-rank representation creates a more general model.
+Matrix completion methods are frequently used for recommender systems \cite{koren2009matrix}. This is because recommender systems typically rely on incomplete and/or sparse data to provide suitable recommendations to the users for services like Amazon, Facebook, and Netflix. The sparsity is common because in most scenarios a user cannot rate or even be aware of most items. The central challenge, then, is to develop methods to fill in missing recommendations based on the user and others' recommendations. The key assumption is that user preferences are generally guided by a small number of underlying factors and so decomposing the data into a low-rank representation creates a more general model.
 
 This approach can be used for this work predicting Bitcoin transactions because we assume the number of factors which determine whether or not two users will interact is much smaller than the number of addresses in the dataset. The significant sparsity of our dataset makes it ideal to implement matrix factorization methods for identifying low-rank decompositions of the original data.
 
@@ -61,11 +61,37 @@ The Netflix Prize is a popular example of recommender systems employing large sc
 
 \subsection{Data}
 
-The training dataset consists of transactions between 3,348,026 sender-receiver pairs and the number of times the sender paid the receiver. The transactions were made between March 2012 to March 2013. The testing dataset consists of sender-receiver pairs which did not interact in the training set time period but may have by the following year, May 2014. The full dataset contains 444,075 unique addresses, and therefore over 19.7 billion possible unordered pairs of addresses. A binary adjacency matrix is extremely sparse, with only $1.7 \times 10^{-5}$ nonzero values.
+\paragraph{Description.} The training dataset consists of transactions between 3,348,026 sender-receiver pairs and the number of times the sender paid the receiver. The transactions were made between March 2012 to March 2013. The testing dataset consists of sender-receiver pairs which did not interact in the training set time period but may have by the following year, May 2014. The full dataset contains 444,075 unique addresses, and therefore over 19.7 billion possible unordered pairs of addresses. A binary adjacency matrix is extremely sparse, with only $1.7 \times 10^{-5}$ nonzero values.
+
+\paragraph{Exploration.} To better understand the data, we constructed a smaller dataset with three columns: address, outdegree, and indegree. We found a positive correlation between indegree and outdegree (Figure \ref{fig:degree_address}). Surprisingly, while some nodes have high outdegree without a high indegree, no nodes have a high indegree but a low outdegree. We expected the opposite: online merchants would receive many payments but not send money often.
+
+In addition, we also found a strong relationship between the address and the outdegree (Figure \ref{fig:in_out_degree}) and indegree (not shown). Lower address numbers have higher indegrees and outdegrees. This suggests that the addresses themselves will be useful as features.
+
+\begin{figure}
+\centering
+\begin{subfigure}{.5\textwidth}
+    \centering
+    \includegraphics[width=1\linewidth]{figures/degree_address}
+    \caption{\small TK TK}
+    \label{fig:degree_address}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+    \centering
+    \includegraphics[width=1\linewidth]{figures/in_out_degree}
+    \caption{\small TK TK}
+    \label{fig:in_out_degree}
+\end{subfigure}
+\caption{\small TK TK}
+\label{fig:test}
+\end{figure}
 
 \subsection{Feature selection}
 
+We approached prediction through two views of the data: matrix completion of a binary adjacency matrix and supervised learning on a dataset with graph properties as features.
 
+For matrix completion, the dataset is a $444,075 \times 444,075$ adjacency matrix, far too large to store in memory. We used the Python library \texttt{scipy} for several representations of sparse matrices which work with \texttt{scikit-learn}'s SVD, NMF, and LDA implementations \cite{jones2014scipy} \cite{scikit-learn}.
+
+For supervised learning, we generated a new dataset with six features of the implicit graph in the transaction dataset: (1) sender address, (2) receiver address, (3), sender outdegree, (4) sender indegree, (5) receiver outdegree, and (6) receiver indegree. The number of transactions was dropped from the training dataset because it is not available in the test dataset. We tested two supervised classifiers on this dataset, SVM and logistic regression. Because a full dataset of all possible combinations of addresses is too large (>19.7 billion samples), we subsampled the dataset, selecting 1,000,000 samples with a hyperparameter $pp$ indicating the percent positive.
 
 \subsection{Classifiers}\label{classifiers}
 
@@ -104,13 +130,13 @@ $$
 
 Ultimately, the learned matrices $V$ and $U$ are uninterpretable. But like many machine learning methods, we assume that if we can approximate the data well with fewer numbers, we might capture generalities in the data. Other dimensionality reduction methods such as SVD and PCA rely on this thinking as well.
 
-\subsection{Classifiers.}
-
-We used four classifiers from the \texttt{scikit-learn} Python library \cite{scikit-learn}, two which make predictions on graph features and two which use matrix completion. Unless stated otherwise, we used the default parameters for each classifier as implemented by \texttt{scikit-learn}.
+\paragraph{Classifiers.} We used four classifiers from the \texttt{scikit-learn} Python library \cite{scikit-learn}, two which make predictions on graph features and two which use matrix completion. Unless stated otherwise, we used the default parameters for each classifier as implemented by \texttt{scikit-learn}.
 
 \begin{itemize}
 
-\item \textbf{SVM.} TK TK TK.
+\item \textbf{Support Vector Machine} (SVM): TK TK TK.
+
+\item \textbf{LogisticRegression} (LR): Regression with binary classification.
 
 \item \textbf{SVD.} SVD is a matrix factorization and dimensionality reduction technique. It is generally useful when we need to determine a low-rank approximation of a large and sparse matrix.     
 

@@ -7,7 +7,7 @@ from sklearn.svm import SVC
 
 
 def main():
-    X_train, y_train, X_test, y_test = data.load('subsample', n=10000000, pct_pos=0.01)
+    X_train, y_train, X_test, y_test = data.load('subsample', n=10000000, pct_pos=0.5)
     clf   = SVC()
     clf.fit(X_train, y_train)
     preds = clf.predict(X_test)

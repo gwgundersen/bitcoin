@@ -6,6 +6,11 @@ James Bennett, Stan Lanning, et~al.
 \newblock In {\em Proceedings of KDD cup and workshop}, volume 2007, page~35.
   New York, NY, USA, 2007.
 
+\bibitem{jones2014scipy}
+Eric Jones, Travis Oliphant, and Pearu Peterson.
+\newblock $\{$SciPy$\}$: open source scientific tools for $\{$Python$\}$.
+\newblock 2014.
+
 \bibitem{koren2009matrix}
 Yehuda Koren, Robert Bell, and Chris Volinsky.
 \newblock Matrix factorization techniques for recommender systems.

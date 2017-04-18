@@ -1,6 +1,8 @@
 """Shared configurations.
 """
 
+
 hfont = {
-    'fontname': 'arial'
+    'fontname': 'arial',
+    'fontsize': 16
 }
