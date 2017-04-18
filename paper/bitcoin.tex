@@ -45,23 +45,21 @@ We predict future Bitcoin transactions for pairs of addresses based on historica
 
 Bitcoin is an online virtual currency introduced in 2008 by Satoshi Nakamoto \cite{nakamoto2008bitcoin}. All transactions are cryptographically signed and recorded on a public ledger called the blockchain. The blockchain allows the global, peer-to-peer network of Bitcoin users to validate all transactions and thereby eschew a centralized bank. See \cite{nielsen2013bitcoin} for a detailed explanation of how Bitcoin works. The upshot is that with Bitcoin, everyone is the bank and the blockchain is an account of the entire history of all anonymized transactions.
 
-In this paper, we predict transactions between pairs of addresses in a portion of the Bitcoin blockchain. The training dataset consists of transaction counts between sender-receiver address pairs that did interact, i.e. there are no zero counts, within a one year period. Therefore the entire training dataset consists of positive examples. The testing dataset consists of some pairs of addresses which did not interact and some which did in a subsequent year. We find that matrix completion methods to estimate the probability of transactions between a sender-receiver pair work better than traditional classification models. In particular, we investigate two matrix completion methods, singular value decomposition (SVD) and nonnegative matrix factorization (NMF). Their performances were evaluated on accuracy, precision, recall, and area under the curve (AUC). We found that NMF generalizes better on the test data in comparison to SVD.
+In this paper, we predict transactions between pairs of addresses in a portion of the Bitcoin blockchain. The training dataset consists of transaction counts between sender-receiver address pairs that did interact, i.e. there are no zero counts, within a one year period. Therefore the entire training dataset consists of positive examples. The testing dataset consists of some pairs of addresses which did not interact and some which did in a subsequent year. We find that matrix completion methods to estimate the probability of transactions between a sender-receiver pair work better than traditional classification models. In particular, we investigate two matrix completion methods, singular value decomposition (SVD) and nonnegative matrix factorization (NMF). Their performances were evaluated on accuracy, precision, recall, and area under the curve (AUC). We found that NMF generalizes better on the test data in comparison to SVD. We also explored latent dirichlet allocation (LDA) but the method was slow with worse performance.
 
-In addition, we explored an SVM-based classifier on a modified dataset in which the additional features are the indegree and outdegree of both the receiver and sender. However, we found that the test accuracy was always around 90\% with low accuracy and recall despite constructing a balanced training set consisting of equal number of positive and negative labels.
+We also explored an alternative approach to the prediction problem by using traditional, supervised classifiers, SVM and logistic regression. For this purpose, we extracted features from the training dataset using graph properties of indegree and outdegree for each node corresponding to each address. Using nonzero counts of transactions as positive labels, we trained the models for both these classifiers by constructing a subsample of the full dataset consisting of address pairs which did not interact in the training dataset along with the ones that did. We observed that these two methods performed equally well as compared to the matrix completion methods described above.
 
 \subsection{Related work}
 
-Matrix completion methods are frequently used for recommender systems \cite{koren2009matrix}. This is because recommender systems typically rely on incomplete and/or sparse data to provide suitable recommendations to the users for services like Amazon, Facebook, and Netflix. The sparsity is common because in most scenarios a user cannot rate or even be aware of most items. The central challenge, then, is to develop methods to fill in missing recommendations based on the user and others' recommendations. The key assumption is that user preferences are generally guided by a small number of underlying factors and so decomposing the data into a low-rank representation creates a more general model.
+Matrix completion methods are frequently used for recommender systems \cite{koren2009matrix}. This is because recommender systems typically rely on incomplete and/or sparse data to provide suitable recommendations to the users for services like Amazon, Facebook, and Netflix. The sparsity is common because in most scenarios a user cannot rate or even be aware of most items. The central challenge, then, is to develop methods to fill in missing recommendations based on the user and others' recommendations. The key assumption is that user preferences are generally guided by a small number of underlying factors and so decomposing the data into a low-rank representation creates a more general model. The Netflix Prize is a popular example of recommender systems employing large scale SVD and other matrix completion methods to estimate the probable preferences of users for movies \cite{bennett2007netflix}.
 
-This approach can be used for this work predicting Bitcoin transactions because we assume the number of factors which determine whether or not two users will interact is much smaller than the number of addresses in the dataset. The significant sparsity of our dataset makes it ideal to implement matrix factorization methods for identifying low-rank decompositions of the original data.
-
-The Netflix Prize is a popular example of recommender systems employing large scale SVD and other matrix completion methods to estimate the probable preferences of users for movies \cite{bennett2007netflix}.
+This approach can be used for predicting Bitcoin transactions because we assume the number of factors which determine whether or not two users will interact is much smaller than the number of addresses in the dataset. The significant sparsity of our dataset makes it ideal to implement matrix factorization methods for identifying low-rank decompositions of the original data.
 
 \section{Methods}
 
 \subsection{Data}
 
-\paragraph{Description.} The training dataset consists of transactions between 3,348,026 sender-receiver pairs and the number of times the sender paid the receiver. The transactions were made between March 2012 to March 2013. The testing dataset consists of sender-receiver pairs which did not interact in the training set time period but may have by the following year, May 2014. The full dataset contains 444,075 unique addresses, and therefore over 19.7 billion possible unordered pairs of addresses. A binary adjacency matrix is extremely sparse, with only $1.7 \times 10^{-5}$ nonzero values.
+\paragraph{Description.} The training dataset consists of transactions between 3,348,026 sender-receiver pairs and the number of times the sender paid the receiver. The transactions were made between March 2012 and March 2013. The testing dataset consists of sender-receiver pairs which did not interact in the training set time period but may have by the following year, May 2014. The full dataset contains 444,075 unique addresses, and therefore over 19.7 billion possible unordered pairs of addresses. An adjacency matrix is extremely sparse, with only $1.7 \times 10^{-5}$ nonzero values.
 
 \paragraph{Exploration.} To better understand the data, we constructed a smaller dataset with three columns: address, outdegree, and indegree. We found a positive correlation between indegree and outdegree (Figure \ref{fig:degree_address}). Surprisingly, while some nodes have high outdegree without a high indegree, no nodes have a high indegree but a low outdegree. We expected the opposite: online merchants would receive many payments but not send money often.
 
@@ -72,38 +70,38 @@ In addition, we also found a strong relationship between the address and the out
 \begin{subfigure}{.5\textwidth}
     \centering
     \includegraphics[width=1\linewidth]{figures/degree_address}
-    \caption{\small TK TK}
+    \caption{\small Relationship between outdegree and address. We would have expected there to be no relationship.}
     \label{fig:degree_address}
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
     \centering
     \includegraphics[width=1\linewidth]{figures/in_out_degree}
-    \caption{\small TK TK}
+    \caption{\small Relationship between indegree and outdegree.}
     \label{fig:in_out_degree}
 \end{subfigure}
-\caption{\small TK TK}
+\caption{\small Exploring the graph-related features of the dataset.}
 \label{fig:test}
 \end{figure}
 
 \subsection{Features}\label{features}
 
-We approached prediction through two views of the data: matrix completion of a binary adjacency matrix and supervised learning on a dataset with graph properties as features.
+We approached prediction through two views of the data: matrix completion of an adjacency matrix and supervised learning on a dataset with graph properties as features.
 
 For matrix completion, the dataset is a $444,075 \times 444,075$ adjacency matrix, far too large to store in memory. We used the Python library \texttt{scipy} for several representations of sparse matrices which work with \texttt{scikit-learn}'s SVD, NMF, and LDA implementations \cite{jones2014scipy} \cite{scikit-learn}.
 
-For supervised learning, we generated a new dataset with six features of the implicit graph in the transaction dataset: (1) sender address, (2) receiver address, (3), sender outdegree, (4) sender indegree, (5) receiver outdegree, and (6) receiver indegree. The number of transactions was dropped from the training dataset because it is not available in the test dataset. We tested two supervised classifiers on this dataset, SVM and logistic regression. Because a full dataset of all possible combinations of addresses is too large (over 19.7 billion samples), we subsampled the dataset, selecting 1,000,000 samples with a hyperparameter $pp$ indicating the percent positive.
+For supervised learning, we generated a new dataset with six features of the implicit graph in the transaction dataset: (1) sender address, (2) receiver address, (3), sender outdegree, (4) sender indegree, (5) receiver outdegree, and (6) receiver indegree. The number of transactions was dropped from the training dataset because it is not available in the test dataset. We tested two supervised classifiers on this dataset, SVM and logistic regression.
 
 \subsection{Classifiers}\label{classifiers}
 
-\paragraph{Spotlight: Nonnegative matrix factorization}\label{Spotlight}
+\paragraph{Spotlight: Nonnegative matrix factorization.}\label{Spotlight}
 
-Nonnegative matrix factorization (NMF) is a method for approximating a matrix as the outer product of two other, typically smaller, matrices. Formally, a matrix $X$ is factorized into matrices $V$ and $U$ such that:
+NMF is a method for approximating a matrix as the outer product of two other, typically smaller, matrices. Formally, a matrix $X$ is factorized into matrices $V$ and $U$ such that:
 
-\begin{equation} \label{eq:1}
+\begin{equation}\label{eq:1}
 X \approx V \times U
 \end{equation}
 
-Where $X$ is an $n \times m$ matrix, $V$ is an $n \times k$ matrix, and $U$ is a $k \times m$ matrix. The value $k$ is a hyperparameter of the model which indicate the number of latent variables that approximate $V$ (Figure \ref{fig:matrix_completion}).
+Where $X$ is an $n \times m$ matrix, $V$ is an $n \times k$ matrix, and $U$ is a $k \times m$ matrix. The value $k$ is a hyperparameter of the model which indicate the number of latent variables that approximate $X$ (Figure \ref{fig:matrix_completion}).
 
 \begin{figure}[!htbp]
     \centering
@@ -112,15 +110,15 @@ Where $X$ is an $n \times m$ matrix, $V$ is an $n \times k$ matrix, and $U$ is a
     \label{fig:matrix_completion}
 \end{figure}
 
-The key assumption is that the approximated matrix has low-rank. In other words, not every cell in the matrix is a free variable. Instead, each cell value is the dot product of two $k$-dimensional vectors. The value of the low-rank assumption is that it reduces the number of free parameters of a model. In the most extreme case, $k=1$, a model that would typically have $n \times m$ parameters can be approximated by just $n + m$ parameters. In general, the number of parameters is $k \times (n + m)$.
+The key assumption is that the approximated matrix has low-rank. In other words, not every cell in the matrix is a free variable. Instead, each cell value is the dot product of two $k$-dimensional vectors which are shared with other cells. The value of the low-rank assumption is that it reduces the number of free parameters of a model. In the most extreme case, $k=1$, a model that would typically have $n \times m$ parameters can be approximated by just $n + m$ parameters. In general, the number of parameters is $k \times (n + m)$.
 
 Prediction for matrix completion methods such as NMF are as follows. First, we approximate the observed data $X$ using matrix factorization (Equation \ref{eq:1}). We then complete the matrix by multiplying the two matrix factors together:
 
-$$
+\begin{equation}
 \hat{X} = V \times U
-$$
+\end{equation}
 
-In principle, $\hat{X}$ is a matrix that captures the latent structure in $X$. We can then base predictions on the value in the completed matrix. For example, since our matrix $X$ contains sender addresses as rows and receiver addresses as columns (or vice versa), then the prediction for whether or not the $i$th address made a transaction with the $j$th address would be found in $\hat{X}[i, j]$.
+In principle, $\hat{X}$ is a matrix that captures the latent structure in $X$. We can then base predictions on the values in the completed matrix. For example, the prediction for whether or not the $i$th address made a transaction with the $j$th address would be found in cell $\hat{X}[i, j]$.
 
 There are many algorithms for solving matrix factorization for NMF \cite{lee2001algorithms}. One straightforward way is to use gradient descent to minimize the difference between the observed data and the factorized estimates. Formally, given observation $X_{ij}$, we want to find low-dimensional vectors $v$ and $u$ such that $X_{ij} = v_i \cdot  u_j$ by minimizing the following objective function:
 
@@ -146,7 +144,7 @@ Ultimately, the learned matrices $V$ and $U$ are uninterpretable. But like many 
 
 \begin{itemize}
 
-    \item \textbf{Singular Value Decomposition.} (SVD): SVD is a matrix factorization and dimensionality reduction technique. It decomposes the original data into a product of 3 matrices: $U$, $\Sigma$ and $V$ where $\Sigma$ is a diagonal matrix while $U$ and $V$ are left-singular and right-singular matrices respectively.
+    \item \textbf{Singular Value Decomposition.} (SVD): SVD is a matrix factorization and dimensionality reduction technique. It decomposes the original data into a product of 3 matrices: $U$, $\Sigma$ and $V$ where $\Sigma$ is a diagonal matrix while $U$ and $V$ are left-singular and right-singular matrices respectively. In order to decompose the large sparse data matrix as a product of two low-rank matrices using SVD, we analyzed the singular values by plotting these singular values for different components. We decided to select the top 20 components by observing a “knee” in the plot (Figure \ref{fig:svd}). Thus, the assumption was that the basic factors determining whether a transaction would take place can be explained by these 20 components.
 
     \item \textbf{Nonnegative Matrix Factorization} (NMF): NMF decomposes multivariate data into the product of two non-negative matrices. By restricting the rank of the matrices, we can create a dense, low-rank approximation of the data. See Section \ref{Spotlight} for details.
 
@@ -156,7 +154,12 @@ Ultimately, the learned matrices $V$ and $U$ are uninterpretable. But like many 
 
 \section{Results}
 
-The results for the performance of SVD and NMF were evaluated on various metrics such as accuracy score, precision, recall and F-1 score. The results have been summarized in Table [TK table]. Moreover, ROC curves for both the methods were analyzed to compare the performances for varying classification thresholds [TK table] . It can be clearly observed from the two ROC curves that NMF outperforms the SVD since the performance of SVD based approach falls below the random guess at a certain threshold.
+Our supervised classifiers and matrix completion methods were evaluated on accuracy, precision, recall, F1 score, and area under the curve (AUC). The results are summarized in Table \ref{tab:standardresults}.
+
+\subsection{Supervised learning}
+
+The two supervised learning methods worked reasonably well given the size and sparsity of the dataset. Logistic regression was faster than any other method by an order of magnitude [TK check with Prakhar]. We found that the proportion of positive examples was an important hyperparameter for both models. Both models had better accuracy and precision with a lower proportion of positive examples, but a slightly worse recall [TK confirm on final results].
+
 
 \begin{table}
 \centering

@@ -15,8 +15,8 @@ plt.style.use('seaborn')
 X, _ = data.load('degree')
 x = X[:, 0]
 y = X[:, 2]
-plt.scatter(x, y, color='k', s=5)
+plt.scatter(x, y, color='k', s=20)
 plt.xlabel('Address', **hfont)
-plt.ylabel('Out degree', **hfont)
+plt.ylabel('Outdegree', **hfont)
 #plt.show()
 plt.savefig('paper/figures/degree_address.png')
