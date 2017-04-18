@@ -1,0 +1,13 @@
+data/test_X_deg.npy
+data/test_X_full.npy
+data/test_X_raw.npy
+data/test_X_raw.txt
+data/train_X_adj.npz
+data/train_X_deg.npy
+data/train_X_degrees.pickle
+data/train_X_full.npy
+data/train_X_raw.npy
+data/train_X_raw.txt
+
+*.pyc
+venv/

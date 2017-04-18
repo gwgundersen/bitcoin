@@ -1,0 +1,31 @@
+\begin{thebibliography}{1}
+
+\bibitem{bennett2007netflix}
+James Bennett, Stan Lanning, et~al.
+\newblock The netflix prize.
+\newblock In {\em Proceedings of KDD cup and workshop}, volume 2007, page~35.
+  New York, NY, USA, 2007.
+
+\bibitem{koren2009matrix}
+Yehuda Koren, Robert Bell, and Chris Volinsky.
+\newblock Matrix factorization techniques for recommender systems.
+\newblock {\em Computer}, 42(8), 2009.
+
+\bibitem{lee2001algorithms}
+Daniel~D Lee and H~Sebastian Seung.
+\newblock Algorithms for non-negative matrix factorization.
+\newblock In {\em Advances in neural information processing systems}, pages
+  556--562, 2001.
+
+\bibitem{nakamoto2008bitcoin}
+Satoshi Nakamoto.
+\newblock Bitcoin: A peer-to-peer electronic cash system.
+\newblock 2008.
+
+\bibitem{nielsen2013bitcoin}
+Michael Nielsen.
+\newblock How the bitcoin protocol actually works.
+\newblock {\em Blog posting at www. michaelnielsen.
+  org/ddi/how-the-bitcoin-protocolactually-works}, 2013.
+
+\end{thebibliography}
